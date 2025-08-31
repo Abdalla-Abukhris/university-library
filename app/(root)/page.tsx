@@ -7,11 +7,11 @@ import { sampleBooks } from "@/constants";
 const Home = async () => {
   const session = await auth();
 
-  const latestBooks = (await db
+  /*const latestBooks = (await db
     .select()
     .from(books)
     .limit(10)
-    .orderBy(desc(books.createdAt))) as Book[];
+    .orderBy(desc(books.createdAt))) as Book[];*/
 
   return (
     <>
