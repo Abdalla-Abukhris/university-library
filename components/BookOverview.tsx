@@ -8,8 +8,8 @@ const BookOverview = ({
   author,
   genre,
   rating,
-  total_copies,
-  available_copies,
+  totalCopies,
+  availableCopies,
   description,
   color,
   cover,
@@ -35,15 +35,17 @@ const BookOverview = ({
         </div>
         <div className="books-copies">
           <p>
-            Total Books: <span>{total_copies}</span>
+            Total Books: <span>{totalCopies}</span>
           </p>
 
           <p>
-            Available Books: <span>{available_copies}</span>
+            Available Books: <span>{availableCopies}</span>
           </p>
         </div>
+
         <p className="book-description">{description}</p>
-        <Button className="book-overview-btn">
+
+        <Button className="book-overview_btn">
           <Image src="/icons/book.svg" alt="book" width={20} height={20} />
           <p className="font-bebas-neue text-xl text-dark-100">Borrow</p>
         </Button>

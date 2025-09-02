@@ -1,29 +1,26 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { Book } from "lucide-react";
 import BookCoverSvg from "@/components/BookCoverSvg";
 
-type BookCoverVariant = "extraSmall" | "small" | "medium" | "regular" | "wide";
+type BookCoverVariant = "small" | "default" | "wide";
 
 const variantStyles: Record<BookCoverVariant, string> = {
-  extraSmall: "book-cover_extra-small",
   small: "book-cover_small",
-  medium: "book-cover_medium",
-  regular: "book-cover_regular",
+  default: "book-cover",
   wide: "book-cover_wide",
 };
 
 interface Props {
   className?: string;
-  variant: BookCoverVariant;
+  variant?: BookCoverVariant;
   coverColor: string;
   coverImage: string;
 }
 
 const BookCover = ({
   className,
-  variant = "regular",
+  variant = "default",
   coverColor = "#012B48",
   coverImage = "https://placehold.co/400x600.png",
 }: Props) => {
