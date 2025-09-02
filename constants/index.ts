@@ -83,7 +83,7 @@ export const sampleBooks = [
     description:
       "A revolutionary guide to making good habits, breaking bad ones, and getting 1% better every day.",
     coverColor: "#fffdf6",
-    coverUrl: "https://m.media-amazon.com/images/I/81F90H7hnML.jpg",
+    cover: "https://m.media-amazon.com/images/I/81F90H7hnML.jpg",
     videoUrl: "/sample-video.mp4?updatedAt=1722593504152",
     summary:
       "A revolutionary guide to making good habits, breaking bad ones, and getting 1% better every day.",
@@ -99,7 +99,7 @@ export const sampleBooks = [
     description:
       "An essential guide to understanding the core mechanisms of JavaScript, focusing on scope and closures.",
     coverColor: "#f8e036",
-    coverUrl:
+    cover:
       "https://m.media-amazon.com/images/I/7186YfjgHHL._AC_UF1000,1000_QL80_.jpg",
     videoUrl: "/sample-video.mp4?updatedAt=1722593504152",
     summary:
@@ -116,7 +116,7 @@ export const sampleBooks = [
     description:
       "A magical tale of Santiago, an Andalusian shepherd boy, who embarks on a journey to find a worldly treasure.",
     coverColor: "#ed6322",
-    coverUrl:
+    cover:
       "https://m.media-amazon.com/images/I/61HAE8zahLL._AC_UF1000,1000_QL80_.jpg",
     videoUrl: "/sample-video.mp4?updatedAt=1722593504152",
     summary:
@@ -133,7 +133,7 @@ export const sampleBooks = [
     description:
       "Rules for focused success in a distracted world, teaching how to cultivate deep focus to achieve peak productivity.",
     coverColor: "#ffffff",
-    coverUrl: "https://m.media-amazon.com/images/I/81JJ7fyyKyS.jpg",
+    cover: "https://m.media-amazon.com/images/I/81JJ7fyyKyS.jpg",
     videoUrl: "/sample-video.mp4?updatedAt=1722593504152",
     summary:
       "Rules for focused success in a distracted world, teaching how to cultivate deep focus to achieve peak productivity.",
@@ -149,7 +149,7 @@ export const sampleBooks = [
     description:
       "A handbook of agile software craftsmanship, offering best practices and principles for writing clean and maintainable code.",
     coverColor: "#080c0d",
-    coverUrl:
+    cover:
       "https://m.media-amazon.com/images/I/71T7aD3EOTL._UF1000,1000_QL80_.jpg",
     videoUrl: "/sample-video.mp4?updatedAt=1722593504152",
     summary:
@@ -166,7 +166,7 @@ export const sampleBooks = [
     description:
       "A timeless guide for developers to hone their skills and improve their programming practices.",
     coverColor: "#100f15",
-    coverUrl:
+    cover:
       "https://m.media-amazon.com/images/I/71VStSjZmpL._AC_UF1000,1000_QL80_.jpg",
     videoUrl: "/sample-video.mp4?updatedAt=1722593504152",
     summary:
@@ -183,7 +183,7 @@ export const sampleBooks = [
     description:
       "Morgan Housel explores the unique behaviors and mindsets that shape financial success and decision-making.",
     coverColor: "#ffffff",
-    coverUrl:
+    cover:
       "https://m.media-amazon.com/images/I/81Dky+tD+pL._AC_UF1000,1000_QL80_.jpg",
     videoUrl: "/sample-video.mp4?updatedAt=1722593504152",
     summary:
