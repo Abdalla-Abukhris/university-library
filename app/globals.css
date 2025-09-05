@@ -1,5 +1,6 @@
-@config "../tailwind.config.ts";
 @import "tailwindcss";
+@config "../tailwind.config.ts";
+
 
 @layer base {
     :root {
@@ -32,7 +33,12 @@
     }
 
     .form-input {
-        @apply w-full min-h-14 border-none text-base font-bold placeholder:font-normal text-white placeholder:text-light-100 focus-visible:ring-0 focus-visible:shadow-none bg-dark-300;
+        @apply w-full h-14 px-4 rounded-xl
+        bg-[#232838] text-white placeholder:text-white/40
+        border border-transparent ring-1 ring-inset ring-white/10 ring-offset-0
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40;
+        /* faint top highlight for depth */
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
     }
 
     /* Book Card */
