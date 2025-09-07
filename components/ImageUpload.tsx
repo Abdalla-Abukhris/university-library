@@ -2,7 +2,6 @@
 
 import { IKImage, ImageKitProvider, IKUpload, IKVideo } from "imagekitio-next";
 import config from "@/lib/config";
-import ImageKit from "imagekit";
 import { useRef, useState } from "react";
 import Image from "next/image";
 import { toast } from "@/hooks/use-toast";
