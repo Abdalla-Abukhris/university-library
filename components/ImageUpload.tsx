@@ -13,22 +13,27 @@ const {
   },
 } = config;
 
-const authenticator = async () => {
+type AuthResponse = { token: string; expire: number; signature: string };
+
+// ImageKit authenticator
+const authenticator = async (): Promise<AuthResponse> => {
   try {
     const response = await fetch(`${config.env.apiEndpoint}/api/auth/imagekit`);
 
     if (!response.ok) {
       const errorText = await response.text();
-
       throw new Error(
         `Request failed with status ${response.status}: ${errorText}`,
       );
     }
 
-    const data = await response.json();
+    const data = (await response.json()) as {
+      signature: string;
+      expire: number;
+      token: string;
+    };
 
     const { signature, expire, token } = data;
-
     return { token, expire, signature };
   } catch (error: any) {
     throw new Error(`Authentication request failed: ${error.message}`);
@@ -42,8 +47,15 @@ interface Props {
   folder: string;
   variant: "dark" | "light";
   onFileChange: (filePath: string) => void;
+  /** Initial value (existing file path) */
   value?: string;
 }
+
+// What we actually store/use after a successful upload
+type IKUploadedFile = {
+  filePath: string; // once set, always a string
+  name?: string; // optional nice display/alt
+};
 
 const ImageUpload = ({
   type,
@@ -54,10 +66,13 @@ const ImageUpload = ({
   onFileChange,
   value,
 }: Props) => {
-  const ikUploadRef = useRef(null);
-  const [file, setFile] = useState<{ filePath: string | null }>({
-    filePath: value ?? null,
-  });
+  // IKUpload renders a hidden <input type="file">, so this ref matches that element.
+  const ikUploadRef = useRef<HTMLInputElement | null>(null);
+
+  // If value is provided, initialize with that path
+  const [file, setFile] = useState<IKUploadedFile | null>(
+    value ? { filePath: value } : null,
+  );
   const [progress, setProgress] = useState(0);
 
   const styles = {
@@ -69,9 +84,8 @@ const ImageUpload = ({
     text: variant === "dark" ? "text-light-100" : "text-dark-400",
   };
 
-  const onError = (error: any) => {
-    console.log(error);
-
+  const onError = (error: unknown) => {
+    console.error(error);
     toast({
       title: `${type} upload failed`,
       description: `Your ${type} could not be uploaded. Please try again.`,
@@ -79,29 +93,35 @@ const ImageUpload = ({
     });
   };
 
-  const onSuccess = (res: any) => {
-    setFile(res);
-    onFileChange(res.filePath);
+  // Narrow the subset of fields we actually use from the upload response
+  const onSuccess = (res: { filePath?: string; name?: string }) => {
+    if (!res.filePath) {
+      onError(new Error("Upload response missing filePath"));
+      return;
+    }
+    const picked: IKUploadedFile = { filePath: res.filePath, name: res.name };
+    setFile(picked);
+    onFileChange(picked.filePath);
 
     toast({
       title: `${type} uploaded successfully`,
-      description: `${res.filePath} uploaded successfully!`,
+      description: `${picked.filePath} uploaded successfully!`,
     });
   };
 
-  const onValidate = (file: File) => {
+  const onValidate = (f: File) => {
     if (type === "image") {
-      if (file.size > 20 * 1024 * 1024) {
+      if (f.size > 20 * 1024 * 1024) {
         toast({
           title: "File size too large",
           description: "Please upload a file that is less than 20MB in size",
           variant: "destructive",
         });
-
         return false;
       }
-    } else if (type === "video") {
-      if (file.size > 50 * 1024 * 1024) {
+    } else {
+      // video
+      if (f.size > 50 * 1024 * 1024) {
         toast({
           title: "File size too large",
           description: "Please upload a file that is less than 50MB in size",
@@ -110,7 +130,6 @@ const ImageUpload = ({
         return false;
       }
     }
-
     return true;
   };
 
@@ -121,15 +140,14 @@ const ImageUpload = ({
       authenticator={authenticator}
     >
       <IKUpload
-        ref={ikUploadRef}
+        ref={ikUploadRef as any} // library's typing sometimes expects a different ref; runtime it's an <input/>
         onError={onError}
         onSuccess={onSuccess}
-        useUniqueFileName={true}
+        useUniqueFileName
         validateFile={onValidate}
         onUploadStart={() => setProgress(0)}
         onUploadProgress={({ loaded, total }) => {
           const percent = Math.round((loaded / total) * 100);
-
           setProgress(percent);
         }}
         folder={folder}
@@ -141,11 +159,7 @@ const ImageUpload = ({
         className={cn("upload-btn", styles.button)}
         onClick={(e) => {
           e.preventDefault();
-
-          if (ikUploadRef.current) {
-            // @ts-ignore
-            ikUploadRef.current?.click();
-          }
+          ikUploadRef.current?.click();
         }}
       >
         <Image
@@ -155,9 +169,7 @@ const ImageUpload = ({
           height={20}
           className="object-contain"
         />
-
         <p className={cn("text-base", styles.placeholder)}>{placeholder}</p>
-
         {file && (
           <p className={cn("upload-filename", styles.text)}>{file.filePath}</p>
         )}
@@ -174,15 +186,18 @@ const ImageUpload = ({
       {file &&
         (type === "image" ? (
           <IKImage
-            alt={file.filePath}
-            path={file.filePath}
+            // Prefer a readable alt; fall back to file name or generic
+            alt={
+              file.name ?? file.filePath.split("/").pop() ?? "uploaded image"
+            }
+            path={file.filePath} // guaranteed string here
             width={500}
             height={300}
           />
         ) : type === "video" ? (
           <IKVideo
-            path={file.filePath}
-            controls={true}
+            path={file.filePath} // guaranteed string
+            controls
             className="h-96 w-full rounded-xl"
           />
         ) : null)}
