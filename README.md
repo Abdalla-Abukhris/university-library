@@ -3,6 +3,7 @@ Built with Next.js, TypeScript, and Postgres, the University Library Management 
 
 
 ⚙️ Tech Stack
+
 Next.js
 PostgreSQL
 Upstash
@@ -13,7 +14,8 @@ Tailwind CSS
 
 
 🔋 Features
-Features of the University Library Management System Project
+
+
 👉 Open-source Authentication: Personalized onboarding flow with email notifications.
 
 👉 Home Page: Highlighted books and newly added books with 3D effects.
@@ -63,3 +65,4 @@ Features of the University Library Management System Project
 👉 Seamless Email Handling: Resend for automated email communications, including notifications and updates.
 
 and many more, including code architecture and reusability
+
