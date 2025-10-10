@@ -1,58 +1,41 @@
-import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
+import NextAuth, { User } from "next-auth";
 import { compare } from "bcryptjs";
-import { z } from "zod";
+import CredentialsProvider from "next-auth/providers/credentials";
 import { db } from "@/database/drizzle";
 import { users } from "@/database/schema";
 import { eq } from "drizzle-orm";
 
-export const runtime = "nodejs"; // ensure Node runtime for bcryptjs
-
-const CredentialsSchema = z.object({
-  email: z.string().email().transform((v) => v.trim().toLowerCase()),
-  password: z.string().min(8).max(128),
-});
-
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  session: { strategy: "jwt" },
+  session: {
+    strategy: "jwt",
+  },
   providers: [
-    Credentials({
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(raw) {
-        const parsed = CredentialsSchema.safeParse({
-          email: raw?.email,
-          password: raw?.password,
-        });
-        if (!parsed.success) return null;
+    CredentialsProvider({
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
 
-        const { email, password } = parsed.data;
-
-        // Query minimal columns only
-        const row = await db
-          .select({
-            id: users.id,
-            email: users.email,
-            fullName: users.fullName,
-            passwordHash: users.passwordHash,
-          })
+        const user = await db
+          .select()
           .from(users)
-          .where(eq(users.email, email))
+          .where(eq(users.email, credentials.email.toString()))
           .limit(1);
 
-        const u = row.at(0);
-        if (!u?.passwordHash) return null;
+        if (user.length === 0) return null;
 
-        const ok = await compare(password, u.passwordHash);
-        if (!ok) return null;
+        const isPasswordValid = await compare(
+          credentials.password.toString(),
+          user[0].password,
+        );
+
+        if (!isPasswordValid) return null;
 
         return {
-          id: String(u.id),
-          email: u.email,
-          name: u.fullName ?? undefined,
-        };
+          id: user[0].id.toString(),
+          email: user[0].email,
+          name: user[0].fullName,
+        } as User;
       },
     }),
   ],
@@ -62,24 +45,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        // Add stable fields once at sign-in
-        token.id = (user as any).id;
+        token.id = user.id;
         token.name = user.name;
-        token.email = user.email;
       }
+
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        (session.user as any).id = token.id as string;
-        session.user.name = token.name ?? session.user.name;
-        session.user.email = token.email ?? session.user.email;
+        session.user.id = token.id as string;
+        session.user.name = token.name as string;
       }
+
       return session;
     },
   },
-  // secret: process.env.AUTH_SECRET,
 });
-
-export const GET = handlers.GET;
-export const POST = handlers.POST;
