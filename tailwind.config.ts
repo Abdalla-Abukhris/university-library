@@ -1,8 +1,7 @@
 import type { Config } from "tailwindcss";
 
 export default {
-  darkMode: ["class", ".dark"],
-  important: true,
+  darkMode: ["class"],
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -25,6 +24,10 @@ export default {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
         },
+        // primary: {
+        //   DEFAULT: "hsl(var(--primary))",
+        //   foreground: "hsl(var(--primary-foreground))",
+        // },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
@@ -51,7 +54,10 @@ export default {
           "4": "hsl(var(--chart-4))",
           "5": "hsl(var(--chart-5))",
         },
-        primary: { DEFAULT: "#E7C9A5", admin: "#25388C" },
+        primary: {
+          DEFAULT: "#E7C9A5",
+          admin: "#25388C",
+        },
         green: {
           DEFAULT: "#027A48",
           100: "#ECFDF3",
@@ -65,7 +71,9 @@ export default {
           500: "#E27233",
           800: "#EF3A4B",
         },
-        blue: { 100: "#0089F1" },
+        blue: {
+          100: "#0089F1",
+        },
         light: {
           100: "#D6E0FF",
           200: "#EED1AC",
@@ -86,15 +94,22 @@ export default {
           700: "#464F6F",
           800: "#1E2230",
         },
-        gray: { 100: "#CBD5E1" },
+        gray: {
+          100: "#CBD5E1",
+        },
       },
-      screens: { xs: "480px" },
+      screens: {
+        xs: "480px",
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
-      backgroundImage: { pattern: "url('/images/pattern.webp')" },
+      backgroundImage: {
+        pattern: "url('/images/pattern.webp')",
+      },
     },
   },
+  plugins: [require("tailwindcss-animate")],
 } satisfies Config;
