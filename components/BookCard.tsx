@@ -1,9 +1,14 @@
 import React from "react";
 import Link from "next/link";
 import BookCover from "@/components/BookCover";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
+
+
+type BookCardProps = Book & {
+  isLoanedBook?: boolean; // UI-only flag
+};
 
 const BookCard = ({
   id,
@@ -12,7 +17,7 @@ const BookCard = ({
   coverColor,
   coverUrl,
   isLoanedBook = false,
-}: Book) => (
+}: BookCardProps) => (
   <li className={cn(isLoanedBook && "xs:w-52 w-full")}>
     <Link
       href={`/books/${id}`}
@@ -26,7 +31,7 @@ const BookCard = ({
       </div>
 
       {isLoanedBook && (
-        <div className="mt-3 w=full">
+        <div className="mt-3 w-full">
           <div className="book-loaned">
             <Image
               src="/icons/calendar.svg"
@@ -37,10 +42,12 @@ const BookCard = ({
             />
             <p className="text-light-100">11 days left to return</p>
           </div>
+
           <Button className="book-btn">Download receipt</Button>
         </div>
       )}
     </Link>
   </li>
 );
+
 export default BookCard;
