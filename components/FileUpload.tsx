@@ -57,7 +57,7 @@ type IKUploadedFile = {
   name?: string; // optional nice display/alt
 };
 
-const ImageUpload = ({
+const FileUpload = ({
   type,
   accept,
   placeholder,
@@ -205,4 +205,4 @@ const ImageUpload = ({
   );
 };
 
-export default ImageUpload;
+export default FileUpload;
