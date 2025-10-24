@@ -4,7 +4,6 @@ import React from "react";
 import { cn } from "@/lib/utils";
 import BookCoverSvg from "@/components/BookCoverSvg";
 import { IKImage } from "imagekitio-next";
-import config from "@/lib/config";
 
 type BookCoverVariant = "extraSmall" | "small" | "medium" | "regular" | "wide";
 
@@ -19,41 +18,54 @@ const variantStyles: Record<BookCoverVariant, string> = {
 interface Props {
   className?: string;
   variant?: BookCoverVariant;
-  coverColor: string;
-  coverImage: string;
+  coverColor?: string;
+  coverUrl?: string; 
 }
-
-const BookCover = ({
+export default function BookCover({
   className,
   variant = "regular",
   coverColor = "#012B48",
-  coverImage = "https://placehold.co/400x600.png",
-}: Props) => {
-  return (
-    <div
-      className={cn(
-        "relative transition-all duration-300",
-        variantStyles[variant],
-        className,
-      )}
-    >
-      <BookCoverSvg coverColor={coverColor} />
+  coverUrl, 
+}: Props) {
+  const urlEndpoint = process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT!;
+  const isAbsolute = !!coverUrl && /^https?:\/\//i.test(coverUrl);
 
+
+  return (
+    <div className={cn("relative transition-all duration-300", variantStyles[variant], className)}>
+      <BookCoverSvg coverColor={coverColor} />
+      
+
+      {/* Image layer */}
       <div
         className="absolute z-10"
         style={{ left: "12%", width: "87.5%", height: "88%" }}
       >
-        <IKImage
-          path={coverImage}
-          urlEndpoint={config.env.imagekit.urlEndpoint}
-          alt="Book cover"
-          fill
-          className="rounded-sm object-fill"
-          loading="lazy"
-          lqip={{ active: true }}
-        />
+        {coverUrl ? (
+          isAbsolute ? (
+            <IKImage
+              urlEndpoint={urlEndpoint}
+              src={coverUrl}           
+              alt="Book cover"
+              fill
+              className="rounded-sm object-cover"
+              loading="lazy"
+              lqip={{ active: true }}
+              
+            />
+          ) : (
+            <IKImage
+              urlEndpoint={urlEndpoint}
+              path={coverUrl}         
+              alt="Book cover"
+              fill
+              className="rounded-sm object-cover"
+              loading="lazy"
+              lqip={{ active: true }}
+            />
+          )
+        ) : null}
       </div>
     </div>
   );
-};
-export default BookCover;
+}

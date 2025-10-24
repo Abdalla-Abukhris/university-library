@@ -8,7 +8,7 @@ interface Props {
 }
 
 const BookList = ({ title, books, containerClassName }: Props) => {
-  if (books.length < 2) return;
+  if (!books?.length) return null;
 
   return (
     <section className={containerClassName}>
@@ -16,7 +16,8 @@ const BookList = ({ title, books, containerClassName }: Props) => {
 
       <ul className="book-list">
         {books.map((book) => (
-          <BookCard key={book.title} {...book} />
+          <BookCard key={book.title} {...book} 
+          />
         ))}
       </ul>
     </section>
